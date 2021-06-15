@@ -23,17 +23,20 @@ Before execution: If you do not already have installed the listed libraies below
 - Install <a href="https://pypi.org/project/scikit-learn/">SCIKIT-Learn:</a> `pip install scikit-learn`
 
 # Instructions:
-1. Run the following commands in the project's root directory to set up your database and model.
+1. Extract the entire project on your local machine
+
+2. Run the following commands in the project's root directory to set up your database and model.
 
     - To run ETL pipeline that cleans data and stores in database
         `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
     - To run ML pipeline that trains classifier and saves
         `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
 
-2. Run the following command in the app's directory to run your web app.
-    `python run.py`
+3. Run the following command in the app's directory to run your web app.
+    `python run.py` 
+    `env | grep` 
 
-3. Go to http://0.0.0.0:3001/
+4. Use the view id given by 'env | grep' build your url like: https://view6914b2f4-3001.udacity-student-workspaces.com/
 
 ## Idea
 This projects analyses real world disaster messages via ML workflow and provides one or more categories, of the disaster type
@@ -48,7 +51,7 @@ disaster_response_pipeline/
 │   ├── disaster_messages.csv
 │   ├── process_data.py
 ├── models/
-|   ├── classifier.pkl
+|   ├── classifier.pkl (nneds to be compiled)
 |   ├── train_classifier.py
 ├── app/
 |   ├── run.py
