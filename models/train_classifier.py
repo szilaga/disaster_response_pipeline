@@ -12,6 +12,7 @@ from nltk.corpus import stopwords
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.metrics import confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import classification_report
@@ -106,17 +107,60 @@ def tokenize(text):
     return clean_tokens
 
 def build_model():
-  
     '''
     Creates a pipline with a Multioutput Classifier
+    Return: pipeline
     '''
-    
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
-        ('clf', MultiOutputClassifier(RandomForestClassifier())) #KNeighborsClassifier()
+        ('clf', MultiOutputClassifier(KNeighborsClassifier())) #KNeighborsClassifier()RandomForestClassifier()
     ])
     
+    # define parameters
+
+#     parameters = {
+#         'clf__n_jobs':[1,2]
+
+#     }
+
+#     # using gridsearch
+#     cv = GridSearchCV(pipeline, param_grid=parameters)            
+    
+    return pipeline
+
+def build_feature_model():
+  
+    '''
+    Creates a feature pipline with a Multioutput Classifier
+    Second feature is a NounExtractor
+    Return: pipeline
+    '''
+    
+    pipeline = Pipeline([
+        ('features', FeatureUnion([
+
+            ('text_pipeline', Pipeline([
+                ('vect', CountVectorizer(tokenizer=tokenize)),
+                ('tfidf', TfidfTransformer()),
+            ])),
+
+            ('starting_noun', StartingNounExtractor())
+        ])),
+
+        ('clf', MultiOutputClassifier(KNeighborsClassifier()))
+    ])
+
+    # define parameters
+    #parameters = {
+    #    'features__text_pipeline__tfidf__use_idf':[True,False]
+        
+    #}
+    
+    # using gridsearch
+    #cv = GridSearchCV(pipeline, param_grid=parameters)            
+    
+    #eturn cv
     return pipeline
 
 
@@ -128,9 +172,8 @@ def evaluate_model(model, X_test, Y_test, category_names):
     '''    
     Y_pred = model.predict(X_test)
     print(classification_report(Y_test, Y_pred, target_names=category_names))
+    #print("\nBest Parameters:", model.best_params_)
    
-    
-
 
 def save_model(model, model_filepath):
     
